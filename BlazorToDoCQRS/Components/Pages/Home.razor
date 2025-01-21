@@ -1,0 +1,63 @@
+﻿@page "/"
+@using BlazorToDoCQRS.Services
+@using BlazorToDoCQRS.Domain
+@using BlazorToDoCQRS.Queries
+@using BlazorToDoCQRS.Commands
+
+@inject ToDoService TodoService
+
+<PageTitle>To-Do List</PageTitle>
+
+<h3>To-Do List</h3>
+
+@if (Items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Complete?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Items)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td>@item.IsComplete</td>
+                    <td>
+                        <a class="btn btn-primary" href="/edit/@item.Id">Edit</a>
+                        <button class="btn btn-danger" @onclick="() => DeleteItem(item.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a class="btn btn-success" href="/create">Create New</a>
+
+@code {
+    private List<ToDoItem> Items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Items = await TodoService.Handle(new GetAllToDoItemsQuery());
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        // delete task
+        await TodoService.Handle(new DeleteToDoItemCommand { Id = id });
+
+        // refresh list
+        Items = await TodoService.Handle(new GetAllToDoItemsQuery());
+    }
+}
