@@ -51,6 +51,7 @@ public class ToDoService(AppDbContext appDbContext)
         toDoItem.Title = command.Title;
         toDoItem.Description = command.Description;
         toDoItem.IsComplete = command.IsComplete;
+        appDbContext.Update(toDoItem);
         await appDbContext.SaveChangesAsync();
     }
 

@@ -1,5 +1,96 @@
-﻿<h3>Edit</h3>
+﻿@page "/edit/{Id:int}"
+
+@rendermode InteractiveServer
+
+@using BlazorToDoCQRS.Commands
+@using BlazorToDoCQRS.Queries
+@using BlazorToDoCQRS.Services
+
+@inject NavigationManager NavManager
+@inject ToDoService ToDoService
+
+<h3>Edit To-Do Item</h3>
+
+@if(IsLoading)
+{
+    <p><em>Loading...</em></p>
+}
+else if (NotFound)
+{
+    <p>Item not found.</p>
+}
+else
+{
+    <div class="row mb-3">
+        <label class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" @bind="Title" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" @bind="Description" />
+        </div>
+    </div>
+
+    <div class="form-check">
+
+        <div class="col-sm-10">
+            <input type="checkbox" class="form-check-input" @bind="IsComplete" />
+            <label class="col-sm-2 form-check-label">Complete?</label>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" @onclick="UpdateItem">Update</button>
+    <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+}
+
 
 @code {
+    [Parameter] public int Id { get; set; }
+
+    private bool IsLoading { get; set; } = true;
+    private bool NotFound { get; set; } = false;
+    private string Title { get; set; } = default!;
+    private string? Description { get; set; }
+    private bool IsComplete { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var item = await ToDoService.Handle(new GetToDoItemByIdQuery { Id = Id });
+
+        if (item == null)
+        {
+            NotFound = true;
+            IsLoading = false;
+            return;
+        } 
+
+        Title = item.Title;
+        Description = item.Description;
+        IsComplete = item.IsComplete;
+
+        IsLoading = false;
+    }
+
+    private async Task UpdateItem()
+    {
+        await ToDoService.Handle(new UpdateToDoItemCommand
+        {
+            Id = Id,
+            Title = Title,
+            Description = Description,
+            IsComplete = IsComplete
+        });
+
+        NavManager.NavigateTo("/");
+    }
+
+    private void Cancel()
+    {
+        NavManager.NavigateTo("/");
+    }
 
 }
