@@ -1,4 +1,4 @@
-# Blazor ToDo App With
+# Blazor ToDo App With CQRS and FluentValidation
 
 A simple **To-Do** application built with [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor) that demonstrates **CRUD (Create, Read, Update, Delete)** functionality using **Entity Framework Core** for data persistence and **SQL Server**.
 
