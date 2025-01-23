@@ -1,4 +1,4 @@
-# Blazor ToDo App
+# Blazor ToDo App With
 
 A simple **To-Do** application built with [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor) that demonstrates **CRUD (Create, Read, Update, Delete)** functionality using **Entity Framework Core** for data persistence and **SQL Server**.
 
@@ -11,10 +11,9 @@ A simple **To-Do** application built with [Blazor](https://dotnet.microsoft.com/
    - [Clone the Repository](#clone-the-repository)  
    - [Setup & Run the App](#setup--run-the-app)  
 5. [Usage](#usage)  
-6. [Screenshots (Optional)](#screenshots-optional)  
-7. [Folder Structure](#folder-structure)  
-8. [Contributing](#contributing)  
-9. [License](#license)
+6. [Folder Structure](#folder-structure)  
+7. [Contributing](#contributing)  
+8. [License](#license)
 
 ---
 
@@ -38,7 +37,7 @@ The application can be used as a starter template or learning example for anyone
 ## 2. Features
 
 - **Responsive UI** powered by Blazor and Bootstrap (if integrated).  
-- **EF Core** integration with a local **SQLite/SQL Server** database (configurable via *appsettings*).  
+- **EF Core** integration with a local **SQL Server** database (configurable via *appsettings*).  
 - **CRUD** operations with a simple **ToDo** entity.  
 - **MediatR** or a **Service**-based approach (depending on your implementation) for separation of concerns.  
 - Ready to run locally and easily deployable.
@@ -47,9 +46,9 @@ The application can be used as a starter template or learning example for anyone
 
 ## 3. Prerequisites
 
-- **.NET 6.0 or later** (depending on your target)  
+- **.NET 9.0** (depending on your target)  
 - **Visual Studio 2022**, **Visual Studio Code**, or another IDE that supports Blazor.  
-- (Optional) **SQL Server** or **SQLite** installed, depending on the connection string you use.  
+- **SQL Server** installed.  
 
 ---
 
@@ -66,8 +65,7 @@ cd BlazorToDoApp
 
 1. **Configure Connection String**:  
    - Open `appsettings.json` (for Blazor Server) or `appsettings.Development.json`.  
-   - Update the `"DefaultConnection"` or `"ConnectionStrings"` section to match your DB settings (if using SQL Server).  
-   - For SQLite, ensure the file path is correct (e.g., `"Data Source=BlazorTodo.db"`).
+   - Update the `"DefaultConnection"` or `"ConnectionStrings"` section to match your DB settings (if using SQL Server). 
 
 2. **Run EF Core Migrations** (if not already created):  
    ```bash
@@ -83,7 +81,7 @@ cd BlazorToDoApp
    or press **F5** in Visual Studio.
 
 4. **Browse**:  
-   - Open a browser at [https://localhost:5001](https://localhost:5001) (or the port specified in your console).  
+   - Open a browser at [https://localhost:7411](https://localhost:7144) (or the port specified in your console).  
    - You should see the **To-Do List** page. Create, edit, and delete tasks to test.
 
 ---
@@ -99,19 +97,7 @@ cd BlazorToDoApp
 
 ---
 
-## 6. Screenshots (Optional)
-
-You can include screenshots or GIFs to show how the app looks:
-
-| Home / List Page | Create Page | Edit Page  |
-|------------------|------------|------------|
-| *Screenshot 1*   | *Screenshot 2* | *Screenshot 3* |
-
-*(To add images, place them in a folder like `docs/images/` and reference them in Markdown.)*
-
----
-
-## 7. Folder Structure
+## 6. Folder Structure
 
 Below is a simplified view of the project structure:
 
@@ -140,7 +126,7 @@ BlazorToDoApp
 
 ---
 
-## 8. Contributing
+## 7. Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to:
 
@@ -151,7 +137,7 @@ Please adhere to the existing code style and conventions.
 
 ---
 
-## 9. License
+## 8. License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details (or include your preferred license).
 
