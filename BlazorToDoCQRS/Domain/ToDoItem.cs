@@ -8,6 +8,7 @@ public class ToDoItem
     public int Id { get; set; }
 
     [Required]
+    [StringLength(100)]
     public string Title { get; set; } = default!;
 
     public string? Description { get; set; }

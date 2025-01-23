@@ -1,6 +1,8 @@
-﻿namespace BlazorToDoCQRS.Commands;
+﻿using MediatR;
 
-public class CreateToDoItemCommand
+namespace BlazorToDoCQRS.Commands;
+
+public class CreateToDoItemCommand : IRequest<int>
 {
     public string Title { get; set; } = default!;
     public string? Description { get; set; }

@@ -1,6 +1,8 @@
-﻿namespace BlazorToDoCQRS.Commands;
+﻿using MediatR;
 
-public class DeleteToDoItemCommand
+namespace BlazorToDoCQRS.Commands;
+
+public class DeleteToDoItemCommand(int id) : IRequest<Unit>
 {
     public int Id { get; set; }
 }

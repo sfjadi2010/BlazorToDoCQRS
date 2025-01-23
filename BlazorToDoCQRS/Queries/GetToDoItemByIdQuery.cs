@@ -1,6 +1,9 @@
-﻿namespace BlazorToDoCQRS.Queries;
+﻿using BlazorToDoCQRS.Domain;
+using MediatR;
 
-public class GetToDoItemByIdQuery
+namespace BlazorToDoCQRS.Queries;
+
+public class GetToDoItemByIdQuery(int id) : IRequest<ToDoItem>
 {
-    public int Id { get; set; }
+    public int Id { get; set; } = id;
 }

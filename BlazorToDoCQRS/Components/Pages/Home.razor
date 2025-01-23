@@ -2,16 +2,24 @@
 
 @rendermode InteractiveServer
 
-@using BlazorToDoCQRS.Services
 @using BlazorToDoCQRS.Domain
 @using BlazorToDoCQRS.Queries
 @using BlazorToDoCQRS.Commands
+@using FluentValidation
 
-@inject ToDoService TodoService
+@inject MediatR.IMediator Mediator
 
 <PageTitle>To-Do List</PageTitle>
 
-<h3>To-Do List</h3>
+<div class="row">
+    <div class="col">
+        <h3>To-Do List</h3>
+    </div>
+    <div class="col text-end">
+        <a class="btn btn-success" href="/create">Create New</a>
+    </div>
+</div>
+
 
 @if (Items == null)
 {
@@ -45,22 +53,39 @@ else
     </table>
 }
 
-<a class="btn btn-success" href="/create">Create New</a>
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">@ErrorMessage</div>
+}
+
 
 @code {
-    private List<ToDoItem> Items;
+    private List<ToDoItem>? Items;
+    private string? ErrorMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Items = await TodoService.Handle(new GetAllToDoItemsQuery());
+        Items = await Mediator.Send(new GetAllToDoItemsQuery());
     }
 
     private async Task DeleteItem(int id)
     {
-        // delete task
-        await TodoService.Handle(new DeleteToDoItemCommand { Id = id });
+        try
+        {
+            // delete task
+            await Mediator.Send(new DeleteToDoItemCommand(id));
 
-        // refresh list
-        Items = await TodoService.Handle(new GetAllToDoItemsQuery());
+            // refresh list
+            Items = await Mediator.Send(new GetAllToDoItemsQuery());
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = string.Join("; ", ex.Errors.Select(e => e.ErrorMessage));
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        
     }
 }

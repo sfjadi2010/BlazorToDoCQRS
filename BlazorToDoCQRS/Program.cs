@@ -1,7 +1,10 @@
 using BlazorToDoCQRS.Components;
 using BlazorToDoCQRS.Infrastructure;
-using BlazorToDoCQRS.Services;
+using BlazorToDoCQRS.PipelineBehavior;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +16,14 @@ builder.Services.AddRazorComponents()
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// add services
-builder.Services.AddScoped<ToDoService>();
+// Register MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+
+// Register FluentValidation
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+// add transient services
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 

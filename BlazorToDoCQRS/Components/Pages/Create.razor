@@ -3,10 +3,10 @@
 @rendermode InteractiveServer
 
 @using BlazorToDoCQRS.Commands
-@using BlazorToDoCQRS.Services
+@using FluentValidation
 
 @inject NavigationManager NavManager
-@inject ToDoService ToDoService
+@inject MediatR.IMediator Mediator
 
 <h3>Create To-Do Item</h3>
 
@@ -24,23 +24,39 @@
     </div>
 </div>
 
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">@ErrorMessage</div>
+}
+
 <button class="btn btn-primary" @onclick="CreateToDo">Create</button>
 <button class="btn btn-secondary" @onclick="Cancel">Cancel  </button>
 
 @code {
     private string Title { get; set; } = default!;
     private string? Description { get; set; }
+    private string? ErrorMessage { get; set; }
 
     private async Task CreateToDo()
     {
-        Console.WriteLine("Create button clicked");
-        await ToDoService.Handle(new CreateToDoItemCommand
+        try
+        {
+            await Mediator.Send(new CreateToDoItemCommand
             {
                 Title = Title,
                 Description = Description
             });
 
-        NavManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = string.Join("; ", ex.Errors.Select(e => e.ErrorMessage));
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     private void Cancel()

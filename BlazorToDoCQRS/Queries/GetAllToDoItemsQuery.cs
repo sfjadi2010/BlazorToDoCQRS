@@ -1,5 +1,8 @@
-﻿namespace BlazorToDoCQRS.Queries;
+﻿using BlazorToDoCQRS.Domain;
+using MediatR;
 
-public class GetAllToDoItemsQuery
+namespace BlazorToDoCQRS.Queries;
+
+public class GetAllToDoItemsQuery : IRequest<List<ToDoItem>>
 {
 }

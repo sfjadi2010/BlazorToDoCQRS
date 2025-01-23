@@ -4,10 +4,10 @@
 
 @using BlazorToDoCQRS.Commands
 @using BlazorToDoCQRS.Queries
-@using BlazorToDoCQRS.Services
+@using FluentValidation
 
 @inject NavigationManager NavManager
-@inject ToDoService ToDoService
+@inject MediatR.IMediator Mediator
 
 <h3>Edit To-Do Item</h3>
 
@@ -43,13 +43,18 @@ else
         </div>
     </div>
 
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger">@ErrorMessage</div>
+    }
+
     <button class="btn btn-primary" @onclick="UpdateItem">Update</button>
     <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
 }
 
-
 @code {
     [Parameter] public int Id { get; set; }
+    private string? ErrorMessage { get; set; }
 
     private bool IsLoading { get; set; } = true;
     private bool NotFound { get; set; } = false;
@@ -59,7 +64,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var item = await ToDoService.Handle(new GetToDoItemByIdQuery { Id = Id });
+        var item = await Mediator.Send(new GetToDoItemByIdQuery(Id));
 
         if (item == null)
         {
@@ -77,15 +82,26 @@ else
 
     private async Task UpdateItem()
     {
-        await ToDoService.Handle(new UpdateToDoItemCommand
+        try
         {
-            Id = Id,
-            Title = Title,
-            Description = Description,
-            IsComplete = IsComplete
-        });
+            await Mediator.Send(new UpdateToDoItemCommand
+            {
+                Id = Id,
+                Title = Title,
+                Description = Description,
+                IsComplete = IsComplete
+            });
 
-        NavManager.NavigateTo("/");
+            NavManager.NavigateTo("/");
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = string.Join("; ", ex.Errors.Select(e => e.ErrorMessage));
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     private void Cancel()
